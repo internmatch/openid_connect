@@ -1,7 +1,7 @@
 module OpenIDConnect
   class ResponseObject
     class UserInfo < ConnectObject
-      attr_optional(
+      STANDARD_CLAIMS = [
         :sub,
         :name,
         :given_name,
@@ -22,7 +22,9 @@ module OpenIDConnect
         :phone_number_verified,
         :address,
         :updated_at
-      )
+      ]
+
+      attr_optional(*STANDARD_CLAIMS)
       alias_method :subject, :sub
       alias_method :subject=, :sub=
 

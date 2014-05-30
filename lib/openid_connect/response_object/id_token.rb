@@ -7,6 +7,7 @@ module OpenIDConnect
 
       attr_required :iss, :sub, :aud, :exp, :iat
       attr_optional :acr, :auth_time, :nonce, :sub_jwk, :at_hash, :c_hash
+      attr_optional(*::OpenIDConnect::ResponseObject::UserInfo::STANDARD_CLAIMS)
       attr_accessor :access_token, :code
       alias_method :subject, :sub
       alias_method :subject=, :sub=
