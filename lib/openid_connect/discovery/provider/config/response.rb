@@ -19,7 +19,9 @@ module OpenIDConnect
               :registration_endpoint,
               :service_documentation,
               :op_policy_uri,
-              :op_tos_uri
+              :op_tos_uri,
+              :check_session_iframe,
+              :end_session_endpoint
             ]
           }
           attr_required *(uri_attributes[:required] + [
