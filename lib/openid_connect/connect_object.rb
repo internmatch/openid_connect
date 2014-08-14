@@ -31,12 +31,12 @@ module OpenIDConnect
       validate! unless options[:skip_validation]
       all_attributes.inject({}) do |hash, _attr_|
         value = self.send(_attr_)
-        hash.merge! _attr_ => case value
-        when ConnectObject
-          value.as_json options
-        else
-          value
-        end
+        json_value = if value.respond_to?(:as_json)
+                       value.as_json options
+                     else
+                       value
+                     end
+        hash.merge! _attr_ => json_value
       end.delete_if do |key, value|
         value.nil?
       end

@@ -39,10 +39,14 @@ module OpenIDConnect
 
       def initialize(attributes = {})
         super
-        (all_attributes - [:email_verified, :phone_number_verified, :address, :updated_at]).each do |key|
+        (all_attributes - non_string_attributes).each do |key|
           self.send "#{key}=", self.send(key).try(:to_s)
         end
         self.updated_at = updated_at.try(:to_i)
+      end
+
+      def non_string_attributes
+        [:email_verified, :phone_number_verified, :address, :updated_at]
       end
 
       def validate_address
