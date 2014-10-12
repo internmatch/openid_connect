@@ -20,11 +20,24 @@ module OpenIDConnect
       end
 
       def verify!(expected = {})
-        exp.to_i > Time.now.to_i &&
-        iss == expected[:issuer] &&
-        Array(aud).include?(expected[:client_id]) && # aud(ience) can be a string or an array of strings
-        nonce == expected[:nonce] or
-        raise InvalidToken.new('Invalid ID Token')
+        errors = []
+
+        expired = exp.to_i < Time.now.to_i
+        unexpected_issuer = iss != expected[:issuer]
+        unexpected_audience = !Array(aud).include?(expected[:client_id])
+        unexpected_nonce = nonce != expected[:nonce]
+
+        errors.push   "exp: #{exp.to_i} < #{Time.now.to_i}" if expired
+        errors.push   "iss: #{iss} != #{expected[:issuer]}" if unexpected_issuer
+        errors.push   "aud: #{aud} not in #{expected[:client_id]}" if unexpected_audience
+        errors.push "nonce: #{nonce} != #{expected[:nonce]}" if unexpected_nonce
+
+        if errors.length > 0
+          error_msg = errors.unshift("Invalid ID Token").join("\n")
+          raise InvalidToken.new(error_msg)
+        else
+          true
+        end
       end
 
       include JWTnizable
